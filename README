@@ -1,0 +1,79 @@
+= PHP Core Extensions =
+
+This is a "polyfill" which provides some core language functionality not offered
+by PHP 'out of the box'. Includes:
+
+== Callable Operators ==
+
+In regular PHP, we can't treat operators as functions, eg.
+
+    $total = array_reduce($penalties,
+                          function($x, $y) { return $x - $y; },
+                          $score);
+    if ($errors) { throw current($errors); }
+
+PHP Core provides an 'op' function to work around this:
+
+    $total = array_reduce($penalties, op('-'), $score);
+    array_map(op('throw'), $errors);
+
+Core's higher-order functions apply 'op' automatically.
+
+== Partial Application ==
+
+By default, PHP's functions are all-or-nothing: you can either call them now,
+with whatever values you have, or you must wait until later:
+
+    $r1 = func($a, $b, $c, null, null, null);
+
+    $r2 = function($d, $e, $f) use ($a, $b, $c) {
+      return func($a, $b, $c, $d, $e, $f);
+    };
+
+Partial application lets you pass in some arguments now and the rest later:
+
+    $r3 = papply('func', $a, $b, $c);
+
+== Currying ==
+
+Curried functions don't need partial application: they collect up the right
+number of arguments automatically:
+
+    $f = curry(function($w, $x, $y, $z) { return func_get_args(); });
+    $g = $f(10);
+    $h = $g(20);
+    $i = $h(30, 40); // $i === [10, 20, 30, 40]
+
+They also pass surplus arguments to their return value:
+
+    $action = curry(function($action) { return "ldap_{$action}"; });
+    $action('bind', $connection, $dn, $password);
+
+Some of Core's higher-order functions will automatically curry their arguments
+and results.
+
+== Named Closures ==
+
+PHP separates functions into those which are named (AKA 'global functions') and
+those which are anonymous (AKA 'Closure instances'):
+
+    function i_am_named($x) { return $x; }
+    $i_am_anonymous = function($x) { return $x; };
+
+PHP allows named functions to be treated like anonymous functions:
+
+    $i_act_anonymously = 'i_am_named';
+
+Core allows anonymous functions to be named:
+
+    defun('i_act_named', $i_am_anonymous);
+
+== Extras ==
+
+A few handy functions are provided too:
+
+ - compose: Function composition
+ - call: Like call_user_func but uses op and curry
+ - uncurry: Like call_user_func_array but uses op and curry
+ - up_to: Like range but handles 0 correctly
+ - arity: Counts a function's arguments (handles defun, papply, op and curry)

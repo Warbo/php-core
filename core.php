@@ -32,7 +32,7 @@ call_user_func(function() {
       '===' => function($x, $y) { return $x === $y;  },
       '[]'  => function($x, $y) { return $x    [$y]; },
       '->'  => function($x, $y) { return $x ->  $y;  },
-      '**'  => function($x, $y) use ($exp) {
+      '**'  => function($x, $y) {
                  // Hide ** in an eval to avoid syntax errors in PHP < 5.6
                  $exp = eval('function($x, $y) { return $x ** $y; }');
                  return $exp($x, $y);

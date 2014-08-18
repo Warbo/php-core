@@ -1,0 +1,4 @@
+{
+    "name": "warbo/core",
+    "autoload": { "files": ["core.php"] }
+}

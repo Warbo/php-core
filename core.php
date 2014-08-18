@@ -64,9 +64,8 @@ call_user_func(function() {
     return (count($args) >= $n)
         // Send $n $args to $f, uncurry the result & apply it to remaining $args
       ? array_reduce(array_slice($args, $n),
-                     function($x, $f) use ($op) {
-          var_dump(get_defined_vars());
-                       return call_user_func($op($f), $x);
+                     function($x, $f) use ($op, $_curry) {
+                       return call_user_func($_curry($op($f)), $x);
                      },
                      call_user_func_array($op($f), array_slice($args, 0, $n)))
         // Not enough $args, wait for some more
@@ -125,8 +124,8 @@ call_user_func(function() {
   // Make these functions available in curried form
  $defun('defun',   $defun);
   defun('op',      function($x) use ($op) {
-                     return in_array($x, ['array', 'new'])? $op($x)
-                                                          : curry($op($x));
+                     return in_array($x, array('array', 'new'))? $op($x)
+                                                               : curry($op($x));
                    });
   defun('curry',   $curry);
   defun('curry_n', $_curry);
@@ -157,4 +156,4 @@ function call() {
   return curry(call_user_func_array($f, $args));
 }
 
-defun('up_to', function($n) { return $n? range(0, $n - 1) : []; });
+defun('up_to', function($n) { return $n? range(0, $n - 1) : array(); });

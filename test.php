@@ -11,42 +11,42 @@ function test($test) {
 
 function failures($tests) { return array_filter(array_map('test', $tests)); }
 
-$failures = failures([
+$failures = failures(array(
   'call calls' => function($x, $y) {
     $f = function($a) use ($x) { return $x; };
     $lhs = call($f, $y);
-    return ($lhs === $x)? [] : get_defined_vars();
+    return ($lhs === $x)? 0 : get_defined_vars();
   },
 
   '+ is callable' => function($x, $y) {
-    list($lhs, $rhs) = [call('+', $x, $y), $x + $y];
-    return ($lhs === $rhs)? [] : get_defined_vars();
+    list($lhs, $rhs) = array(call('+', $x, $y), $x + $y);
+    return ($lhs === $rhs)? 0 : get_defined_vars();
   },
 
   'instanceof spots instances' => function() {
     $o = new stdClass;
     $result = call('instanceof', $o, 'stdClass');
-    return $result? [] : get_defined_vars();
+    return $result? 0 : get_defined_vars();
   },
 
   'instanceof spots non-instances' => function() {
     $o = new Exception;
     $result = call('instanceof', $o, 'stdClass');
-    return $result? get_defined_vars() : [];
+    return $result? get_defined_vars() : 0;
   },
 
   'array is callable' => function($x, $y, $z) {
     $lhs = call('array', $x, $y, $z);
-    return ($lhs === [$x, $y, $z])? [] : get_defined_vars();
+    return ($lhs === array($x, $y, $z))? 0 : get_defined_vars();
   },
 
   'can define functions' => function($x, $y, $z) {
     $name = "func{$x}";
     $f = defun($name, function($n) use ($y) { return $y + $n; });
     $result = $name($z);
-    return ($result === $y + $z)? [] : get_defined_vars();
+    return ($result === $y + $z)? 0 : get_defined_vars();
   },
-]);
+));
 
-$failures? var_dump(['Test failures' => $failures])
+$failures? var_dump(array('Test failures' => $failures))
          : (print "All tests passed\n");

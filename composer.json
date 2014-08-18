@@ -1,4 +1,6 @@
 {
     "name": "warbo/core",
+    "description": "Polyfills some PHP language deficiencies",
+    "license": "CC0-1.0",
     "autoload": { "files": ["core.php"] }
 }

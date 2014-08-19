@@ -1,6 +1,6 @@
 <?php
 
-require('core.php');
+require(__DIR__ . '/vendor/autoload.php');
 
 function random() { return abs(mt_rand()); }
 

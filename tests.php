@@ -2,7 +2,7 @@
 
 require(__DIR__ . '/vendor/autoload.php');
 
-function random() { return abs(mt_rand()); }
+// Perform some rudimentary property checks
 
 function test($test) {
   return call_user_func_array($test,

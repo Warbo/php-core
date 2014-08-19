@@ -132,28 +132,29 @@ call_user_func(function() {
   defun('arity',   $arity);
 });
 
-// Like call_user_func_array but works for operators too
-defun('uncurry', curry(function($f, $args) {
-  return call_user_func_array(op($f), $args);
-}));
+defun('key_map', function($f, $a) {
+                   return array_combine(array_keys($a),
+                                        array_map($f, array_keys($a), $a));
+                 });
 
-function compose($a, $b) {
-  $funcs = array_reverse(func_get_args());
-  $f     = op(array_shift($funcs));
-  return function($x) use ($funcs, $f) {
-    static $curried = true;
-    return array_reduce($funcs,
-                        function($x, $f) {
-                          return call_user_func(op($f), $x);
-                        },
-                        call_user_func_array($f, func_get_args()));
-  };
-}
+defun('defuns', key_map('defun'));
 
+defuns(array(
+  // Like call_user_func_array but works for operators too
+  'uncurry' => function($f, $args) {
+                 return call_user_func_array(op($f), $args);
+               },
+
+  // Like range but handles 0 correctly
+  'up_to' => function($n) { return $n? range(0, $n - 1) : array(); },
+
+  // Random Naturals
+  'random' => function($_) { return abs(mt_rand()); }
+));
+
+// Like call_user_func but uses curry & op. We don't curry call since it's nary.
 function call() {
   $args = func_get_args();
   $f    = op(array_shift($args));
   return curry(call_user_func_array($f, $args));
 }
-
-defun('up_to', function($n) { return $n? range(0, $n - 1) : array(); });

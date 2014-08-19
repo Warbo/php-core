@@ -102,7 +102,7 @@ call_user_func(function() {
   // Allow expressions (including Closures) to be named as functions
   $defun = function($name, $expr) use ($curry) {
     // Source: http://www.php.net/manual/en/functions.user-defined.php
-    $valid = '/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]/';
+    $valid = '/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/';
     array_map(function($x) { if ($x[1]) trigger_error($x[0], E_USER_ERROR); },
         array(array("Invalid name for $name", !preg_match($valid, $name)),
               array("Cannot redeclare $name", function_exists($name)    ),

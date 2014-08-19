@@ -46,6 +46,12 @@ $failures = failures(array(
     $result = $name($z);
     return ($result === $y + $z)? 0 : get_defined_vars();
   },
+
+  'uncurry uncurries' => function($x, $y, $z) {
+    $f = uncurry(function($a, $b, $c) { return $a + $b + $c; });
+    $result = $f(func_get_args());
+    return ($result === $x + $y + $z)? 0 : get_defined_vars();
+  },
 ));
 
 $failures? var_dump(array('Test failures' => $failures))

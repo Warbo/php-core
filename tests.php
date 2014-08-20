@@ -1,5 +1,12 @@
 <?php
 
+// Errors are unacceptable
+set_error_handler(function() {
+    var_dump(array('args'  => func_get_args(),
+    'trace' => debug_backtrace()));
+    die();
+});
+
 require(__DIR__ . '/vendor/autoload.php');
 
 // Perform some rudimentary property checks
@@ -38,6 +45,19 @@ $failures = failures(array(
   'array is callable' => function($x, $y, $z) {
     $lhs = call('array', $x, $y, $z);
     return ($lhs === array($x, $y, $z))? 0 : get_defined_vars();
+  },
+
+  'not is callable' => function($x, $y) {
+    $f = op('!');
+    $lhs = $f($x > $y);
+    $rhs = !($x > $y);
+    return ($lhs === $rhs)? 0 : get_defined_vars();
+  },
+
+  'not is curried' => function($x, $y) {
+    $lhs = op('!', $x > $y);
+    $rhs = !($x > $y);
+    return ($lhs === $rhs)? 0 : get_defined_vars();
   },
 
   'can define functions' => function($x, $y, $z) {

@@ -56,17 +56,14 @@ call_user_func(function() {
         };
 
   // Curry functions: accumulates $n $args then calls $f
-  $curry_ = function($args, $n, $f_) use (&$curry_, $op) {
-              $f = $op($f_);
-              if (!is_callable($f)) error("Cannot curry {$f_}");
-
+  $curry_ = function($args, $n, $f) use (&$curry_, $op) {
               return (count($args) >= $n)
                 // Send $n $args to $f, uncurry & apply to remaining $args
                 ? array_reduce(array_slice($args, $n),
                                function($f, $x) use ($op, $curry_) {
                                  return call_user_func($op($f), $x);
                                },
-                               call_user_func_array($f,
+                               call_user_func_array($op($f),
                                                     array_slice($args, 0, $n)))
                 // Not enough $args, wait for some more
                 : function() use ($args, $n, $f, &$curry_) {

@@ -84,7 +84,9 @@ call_user_func(function() {
 
              // If we're a curried version of $f, return $f's arity
              if (isset($sv['curried'])) {
-               if ($sv['n']) return $sv['n'] - count($sv['args']);
+               if (isset($sv['n']) && $sv['n']) {
+                 return $sv['n'] - count($sv['args']);
+               }
                if (isset($sv['f'])) return $arity($sv['f']);
              }
 
@@ -145,7 +147,6 @@ defuns(array(
   'uncurry' => function($f, $args) {
                  return call_user_func_array(op($f), $args);
                },
-
   // Like range but handles 0 correctly
   'up_to' => function($n) { return $n? range(0, $n - 1) : array(); },
 

@@ -84,7 +84,9 @@ call_user_func(function() {
 
              // If we're a curried version of $f, return $f's arity
              if (isset($sv['curried'])) {
-               if ($sv['n']) return $sv['n'] - count($sv['args']);
+               if (isset($sv['n']) && $sv['n']) {
+                 return $sv['n'] - count($sv['args']);
+               }
                if (isset($sv['f'])) return $arity($sv['f']);
              }
 
